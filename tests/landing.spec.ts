@@ -154,3 +154,21 @@ test("fits narrow and enlarged layouts with the family text and target floors", 
   await page.addStyleTag({ content: "html { font-size: 200%; }" });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
+
+/* QA sweep October 8 (STS2, RS2): a negative margin pushed the Menu button 10 px past the header row from 320 to 1020. */
+test("the Menu button stays inside the header row at every phone and tablet width", async ({ page }) => {
+  for (const width of [320, 360, 400, 480, 600, 768, 900, 1020]) {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto("/");
+    const spill = await page.evaluate(() => {
+      const toggle = document.querySelector(".menu-toggle")!.getBoundingClientRect();
+      const row = document.querySelector(".topbar")!.getBoundingClientRect();
+      const nav = document.querySelector(".site-nav")!;
+      return { past: Math.round(toggle.right - row.right), navScroll: nav.scrollWidth - nav.clientWidth };
+    });
+    expect(spill, `at ${width}`).toEqual({ past: 0, navScroll: 0 });
+  }
+  const toggle = page.getByRole("button", { name: "Menu" });
+  const iconRight = await toggle.locator("svg").evaluate(icon => Math.round(icon.getBoundingClientRect().right));
+  expect(iconRight, "icon keeps the design's right edge").toBe(Math.round((await box(page, ".topbar")).x + (await box(page, ".topbar")).width));
+});
