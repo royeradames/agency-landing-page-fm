@@ -154,3 +154,51 @@ test("fits narrow and enlarged layouts with the family text and target floors", 
   await page.addStyleTag({ content: "html { font-size: 200%; }" });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
+
+/* QA sweep October 8 (STS2, RS2): a negative margin pushed the Menu button 10 px past the header row from 320 to 1020. */
+test("the Menu button stays inside the header row at every phone and tablet width", async ({ page }) => {
+  for (const width of [320, 360, 400, 480, 600, 768, 900, 1020]) {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto("/");
+    const spill = await page.evaluate(() => {
+      const toggle = document.querySelector(".menu-toggle")!.getBoundingClientRect();
+      const row = document.querySelector(".topbar")!.getBoundingClientRect();
+      const nav = document.querySelector(".site-nav")!;
+      return { past: Math.round(toggle.right - row.right), navScroll: nav.scrollWidth - nav.clientWidth };
+    });
+    expect(spill, `at ${width}`).toEqual({ past: 0, navScroll: 0 });
+  }
+  const toggle = page.getByRole("button", { name: "Menu" });
+  const iconRight = await toggle.locator("svg").evaluate(icon => Math.round(icon.getBoundingClientRect().right));
+  expect(iconRight, "icon keeps the design's right edge").toBe(Math.round((await box(page, ".topbar")).x + (await box(page, ".topbar")).width));
+});
+
+/* Width sweep October 8 (STS2): from 770 to 1020 "CREATIVES" was 17px wider than the 414px heading box. */
+test("the hero heading fits its box at every width", async ({ page }) => {
+  for (const width of [320, 375, 600, 768, 770, 900, 1020, 1024, 1440, 1920]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/");
+    const spill = await page.locator(".hero h1").evaluate(heading => heading.scrollWidth - heading.clientWidth);
+    expect(spill, `heading spill at ${width}`).toBeLessThanOrEqual(0);
+  }
+});
+
+/* Journey QA October 8 (STS1): the open phone and tablet menu sat over the hero heading. As in the mobile-menu design, whatever
+   the menu covers is hidden rather than left underneath it. */
+test("the open menu never sits over visible hero text", async ({ page }) => {
+  for (const width of [320, 375, 400, 600, 768, 1000]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/");
+    await page.getByRole("button", { name: "Menu" }).click();
+    await expect(page.locator("#site-menu")).toBeVisible();
+    const under = await page.evaluate(() => {
+      const menu = document.querySelector("#site-menu")!.getBoundingClientRect();
+      return [...document.querySelectorAll(".hero h1, .scroll-cue img")].filter(element => {
+        const box = element.getBoundingClientRect();
+        return element.checkVisibility({ visibilityProperty: true })
+          && Math.min(box.right, menu.right) - Math.max(box.left, menu.left) > 2 && Math.min(box.bottom, menu.bottom) - Math.max(box.top, menu.top) > 2;
+      }).map(element => element.textContent || element.localName);
+    });
+    expect(under, `hero content under the menu at ${width}`).toEqual([]);
+  }
+});
