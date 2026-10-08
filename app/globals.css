@@ -136,7 +136,7 @@ picture { display: block; }
   .logo { width: 10.625rem; height: 2.0625rem; }
   .menu-toggle svg { width: 2rem; height: 1.5rem; }
   .menu[data-open] { top: 7.9375rem; left: 2.5rem; right: 2.5rem; }
-  .hero h1 { max-width: 25.875rem; margin-top: 4.5rem; font-size: 3.5rem; letter-spacing: .156em; }
+  .hero h1 { max-width: min(100%, 28rem); margin-top: 4.5rem; font-size: 3.5rem; letter-spacing: .156em; }
   .scroll-cue { margin-top: 4.5rem; }
 
   .feature-image img { aspect-ratio: 768 / 600; }
