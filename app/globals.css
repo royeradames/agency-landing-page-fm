@@ -85,7 +85,7 @@ picture { display: block; }
 .feature-copy h2 { margin: 0; font-family: var(--serif); font-size: 2rem; font-weight: 900; line-height: 1.25; letter-spacing: -.23px; }
 .feature-copy p { margin: 0; color: var(--body); font-size: 1.125rem; line-height: 1.875rem; letter-spacing: -.13px; }
 .learn-more { position: relative; isolation: isolate; display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0 .5625rem; font-family: var(--serif); font-size: 1rem; font-weight: 900; line-height: 1.5rem; letter-spacing: 1px; text-decoration: none; text-transform: uppercase; }
-.learn-more::after { content: ""; position: absolute; z-index: -1; left: 0; right: 0; bottom: .625rem; height: .625rem; border-radius: 1.75rem; background: var(--accent); opacity: .25; }
+.learn-more::after { content: ""; position: absolute; z-index: -1; left: 0; right: 0; bottom: .8125rem; height: .625rem; border-radius: 1.75rem; background: var(--accent); opacity: .25; }
 .learn-more:hover::after { opacity: 1; }
 .learn-more-yellow { --accent: var(--yellow); }
 .learn-more-red { --accent: var(--red); }
