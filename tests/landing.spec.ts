@@ -182,3 +182,23 @@ test("the hero heading fits its box at every width", async ({ page }) => {
     expect(spill, `heading spill at ${width}`).toBeLessThanOrEqual(0);
   }
 });
+
+/* Journey QA October 8 (STS1): the open phone and tablet menu sat over the hero heading. As in the mobile-menu design, whatever
+   the menu covers is hidden rather than left underneath it. */
+test("the open menu never sits over visible hero text", async ({ page }) => {
+  for (const width of [320, 375, 400, 600, 768, 1000]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/");
+    await page.getByRole("button", { name: "Menu" }).click();
+    await expect(page.locator("#site-menu")).toBeVisible();
+    const under = await page.evaluate(() => {
+      const menu = document.querySelector("#site-menu")!.getBoundingClientRect();
+      return [...document.querySelectorAll(".hero h1, .scroll-cue img")].filter(element => {
+        const box = element.getBoundingClientRect();
+        return element.checkVisibility({ visibilityProperty: true })
+          && Math.min(box.right, menu.right) - Math.max(box.left, menu.left) > 2 && Math.min(box.bottom, menu.bottom) - Math.max(box.top, menu.top) > 2;
+      }).map(element => element.textContent || element.localName);
+    });
+    expect(under, `hero content under the menu at ${width}`).toEqual([]);
+  }
+});
