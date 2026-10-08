@@ -172,3 +172,13 @@ test("the Menu button stays inside the header row at every phone and tablet widt
   const iconRight = await toggle.locator("svg").evaluate(icon => Math.round(icon.getBoundingClientRect().right));
   expect(iconRight, "icon keeps the design's right edge").toBe(Math.round((await box(page, ".topbar")).x + (await box(page, ".topbar")).width));
 });
+
+/* Width sweep October 8 (STS2): from 770 to 1020 "CREATIVES" was 17px wider than the 414px heading box. */
+test("the hero heading fits its box at every width", async ({ page }) => {
+  for (const width of [320, 375, 600, 768, 770, 900, 1020, 1024, 1440, 1920]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/");
+    const spill = await page.locator(".hero h1").evaluate(heading => heading.scrollWidth - heading.clientWidth);
+    expect(spill, `heading spill at ${width}`).toBeLessThanOrEqual(0);
+  }
+});
