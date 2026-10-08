@@ -65,6 +65,8 @@ section[id], main [id] { scroll-margin-top: 1rem; }
   background: white;
   box-shadow: 0 1.5rem 3rem rgb(36 48 62 / .12);
 }
+/* As in the mobile-menu design, the open menu covers the hero heading; the covered heading and arrow are hidden, not left under it. */
+@media (max-width: 63.99rem) { .hero:has(.menu[data-open]) h1, .hero:has(.menu[data-open]) .scroll-cue { visibility: hidden; } }
 .menu[data-open]::before { content: ""; position: absolute; top: -1.5rem; right: 0; width: 1.5rem; height: 1.5rem; background: white; clip-path: polygon(100% 0, 100% 100%, 0 100%); }
 .menu[data-open] .menu-link { display: inline-flex; align-items: center; min-height: 2.75rem; padding-inline: .5rem; color: var(--body); font-size: 1.25rem; line-height: 1.5625rem; letter-spacing: -.14px; text-decoration: none; }
 .menu[data-open] .menu-link:hover { color: var(--ink); }
