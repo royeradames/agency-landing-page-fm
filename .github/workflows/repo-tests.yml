@@ -3,7 +3,7 @@ name: Repo tests (build and Playwright on hosted runner)
 on:
   push:
     branches: [claude/lighthouse-variants]
-    paths: [lab/tests.json, lab/test.sh]
+    paths: [lab/tests.json, lab/test.sh, lab/jsize.sh]
 permissions:
   contents: read
 jobs:
@@ -33,4 +33,4 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: bash lab/test.sh "${{ matrix.t.repo }}" "${{ matrix.t.ref }}" "${{ matrix.t.serve }}"
+      - run: bash lab/${{ matrix.t.script || 'test.sh' }} "${{ matrix.t.repo }}" "${{ matrix.t.ref }}" "${{ matrix.t.serve }}"
