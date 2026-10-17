@@ -52,12 +52,34 @@
 {
 "id": "audiophile-ecommerce:/checkout",
 "url": "https://audiophile.royeradames.com/checkout",
-"device": "mobile"
+"device": "mobile",
+"setup": {
+"type": "localStorage",
+"data": {
+"audiophile-demo-cart-v1": [
+{
+"productId": "yx1-earphones",
+"quantity": 1
+}
+]
+}
+}
 },
 {
 "id": "audiophile-ecommerce:/checkout",
 "url": "https://audiophile.royeradames.com/checkout",
-"device": "desktop"
+"device": "desktop",
+"setup": {
+"type": "localStorage",
+"data": {
+"audiophile-demo-cart-v1": [
+{
+"productId": "yx1-earphones",
+"quantity": 1
+}
+]
+}
+}
 },
 {
 "id": "audiophile-ecommerce:/checkout/pay",
@@ -622,22 +644,42 @@
 {
 "id": "personal-finance-app-fm:/",
 "url": "https://personal-finance-app.royeradames.com/",
-"device": "mobile"
+"device": "mobile",
+"setup": {
+"type": "click",
+"path": "/login",
+"text": "Use the demo account"
+}
 },
 {
 "id": "personal-finance-app-fm:/",
 "url": "https://personal-finance-app.royeradames.com/",
-"device": "desktop"
+"device": "desktop",
+"setup": {
+"type": "click",
+"path": "/login",
+"text": "Use the demo account"
+}
 },
 {
 "id": "personal-finance-app-fm:/budgets",
 "url": "https://personal-finance-app.royeradames.com/budgets",
-"device": "mobile"
+"device": "mobile",
+"setup": {
+"type": "click",
+"path": "/login",
+"text": "Use the demo account"
+}
 },
 {
 "id": "personal-finance-app-fm:/budgets",
 "url": "https://personal-finance-app.royeradames.com/budgets",
-"device": "desktop"
+"device": "desktop",
+"setup": {
+"type": "click",
+"path": "/login",
+"text": "Use the demo account"
+}
 },
 {
 "id": "personal-finance-app-fm:/login",
@@ -652,22 +694,42 @@
 {
 "id": "personal-finance-app-fm:/pots",
 "url": "https://personal-finance-app.royeradames.com/pots",
-"device": "mobile"
+"device": "mobile",
+"setup": {
+"type": "click",
+"path": "/login",
+"text": "Use the demo account"
+}
 },
 {
 "id": "personal-finance-app-fm:/pots",
 "url": "https://personal-finance-app.royeradames.com/pots",
-"device": "desktop"
+"device": "desktop",
+"setup": {
+"type": "click",
+"path": "/login",
+"text": "Use the demo account"
+}
 },
 {
 "id": "personal-finance-app-fm:/recurring-bills",
 "url": "https://personal-finance-app.royeradames.com/recurring-bills",
-"device": "mobile"
+"device": "mobile",
+"setup": {
+"type": "click",
+"path": "/login",
+"text": "Use the demo account"
+}
 },
 {
 "id": "personal-finance-app-fm:/recurring-bills",
 "url": "https://personal-finance-app.royeradames.com/recurring-bills",
-"device": "desktop"
+"device": "desktop",
+"setup": {
+"type": "click",
+"path": "/login",
+"text": "Use the demo account"
+}
 },
 {
 "id": "personal-finance-app-fm:/sign-up",
@@ -682,12 +744,22 @@
 {
 "id": "personal-finance-app-fm:/transactions",
 "url": "https://personal-finance-app.royeradames.com/transactions",
-"device": "mobile"
+"device": "mobile",
+"setup": {
+"type": "click",
+"path": "/login",
+"text": "Use the demo account"
+}
 },
 {
 "id": "personal-finance-app-fm:/transactions",
 "url": "https://personal-finance-app.royeradames.com/transactions",
-"device": "desktop"
+"device": "desktop",
+"setup": {
+"type": "click",
+"path": "/login",
+"text": "Use the demo account"
+}
 },
 {
 "id": "ping-coming-soon-page-fm:/",
