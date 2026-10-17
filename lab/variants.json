@@ -1,9 +1,63 @@
 [
- {"name": "qr-base", "repo": "qr-code-card", "routes": ["/"]},
- {"name": "qr-img", "repo": "qr-code-card", "patch": "qr-img.patch", "routes": ["/"]},
- {"name": "qr-inlinecss", "repo": "qr-code-card", "patch": "qr-inlinecss.patch", "routes": ["/"]},
- {"name": "qr-both", "repo": "qr-code-card", "patch": "qr-both.patch", "routes": ["/"]},
- {"name": "ap-base", "repo": "article-preview-component-fm", "routes": ["/"]},
- {"name": "ap-inlinecss", "repo": "article-preview-component-fm", "patch": "ap-inlinecss.patch", "routes": ["/"]},
- {"name": "ap-both", "repo": "article-preview-component-fm", "patch": "ap-both.patch", "routes": ["/"]}
+ {
+  "name": "qr-base",
+  "repo": "qr-code-card",
+  "routes": [
+   "/"
+  ],
+  "runs": 10
+ },
+ {
+  "name": "qr-img",
+  "repo": "qr-code-card",
+  "patch": "qr-img.patch",
+  "routes": [
+   "/"
+  ],
+  "runs": 10
+ },
+ {
+  "name": "qr-inlinecss",
+  "repo": "qr-code-card",
+  "patch": "qr-inlinecss.patch",
+  "routes": [
+   "/"
+  ],
+  "runs": 10
+ },
+ {
+  "name": "qr-both",
+  "repo": "qr-code-card",
+  "patch": "qr-both.patch",
+  "routes": [
+   "/"
+  ],
+  "runs": 10
+ },
+ {
+  "name": "ap-base",
+  "repo": "article-preview-component-fm",
+  "routes": [
+   "/"
+  ],
+  "runs": 10
+ },
+ {
+  "name": "ap-inlinecss",
+  "repo": "article-preview-component-fm",
+  "patch": "ap-inlinecss.patch",
+  "routes": [
+   "/"
+  ],
+  "runs": 10
+ },
+ {
+  "name": "ap-both",
+  "repo": "article-preview-component-fm",
+  "patch": "ap-both.patch",
+  "routes": [
+   "/"
+  ],
+  "runs": 10
+ }
 ]

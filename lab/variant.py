@@ -14,7 +14,7 @@ sh = lambda cmd, **kw: subprocess.run(cmd, shell=True, check=True, env=env, **kw
 sh(f"git clone -q https://github.com/royeradames/{v['repo']} {app} && git -C {app} checkout -q {v.get('ref', 'main')}")
 if v.get('patch'):
     sh(f"git -C {app} apply {lab}/patches/{v['patch']}")
-sh('npm ci --no-audit --no-fund --loglevel=error', cwd=app)
+sh('npm ci --no-audit --no-fund --loglevel=error || npm install --no-audit --no-fund --loglevel=error', cwd=app)
 sh('npx next build', cwd=app)
 server = subprocess.Popen('npx next start -p 3000', shell=True, cwd=app, env=env)
 for _ in range(60):
