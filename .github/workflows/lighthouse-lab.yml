@@ -1,0 +1,35 @@
+name: Lighthouse lab (FM sweep)
+# Measurement-only branch. Runs Lighthouse 13.5.0 against public production URLs listed in lab/jobs.json,
+# RUNS times per cell, sharded across hosted runners. Nothing here deploys or writes anywhere but artifacts.
+on:
+  push:
+    branches: [claude/lighthouse-lab]
+permissions:
+  contents: read
+concurrency:
+  group: lighthouse-lab
+  cancel-in-progress: true
+jobs:
+  measure:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm i -g lighthouse@13.5.0
+      - name: Measure shard
+        run: python3 lab/run.py ${{ matrix.shard }} 8
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shard-${{ matrix.shard }}
+          path: out/
+          retention-days: 7
