@@ -1,0 +1,46 @@
+name: Lighthouse variants (build, serve, measure)
+# Measurement-only branch. Each variant in lab/variants.json is cloned at its ref, optionally patched,
+# built with `next build`, served with `next start` on the runner, and measured with Lighthouse 13.5.0.
+on:
+  push:
+    branches: [claude/lighthouse-variants]
+permissions:
+  contents: read
+concurrency:
+  group: lighthouse-variants
+  cancel-in-progress: true
+jobs:
+  plan:
+    runs-on: ubuntu-24.04
+    outputs:
+      ids: ${{ steps.p.outputs.ids }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - id: p
+        run: echo "ids=$(python3 -c 'import json;print(json.dumps(list(range(len(json.load(open("lab/variants.json")))))))')" >> "$GITHUB_OUTPUT"
+  measure:
+    needs: plan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        v: ${{ fromJson(needs.plan.outputs.ids) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm i --prefix lab --no-save --no-audit --no-fund lighthouse@13.5.0
+      - name: Build, serve and measure variant
+        run: python3 lab/variant.py ${{ matrix.v }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: variant-${{ matrix.v }}
+          path: out/
+          retention-days: 7

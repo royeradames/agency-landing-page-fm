@@ -1,0 +1,36 @@
+diff --git a/app/page.tsx b/app/page.tsx
+index e1b6754..67185b6 100644
+--- a/app/page.tsx
++++ b/app/page.tsx
+@@ -1,18 +1,17 @@
+-import Image from "next/image";
+-
+ export default function Home() {
+   return (
+     <>
+       <main>
+         <article className="qr-card" aria-labelledby="card-title">
+-          <Image
++          {/* eslint-disable-next-line @next/next/no-img-element -- painted with the first frame, not after hydration */}
++          <img
+             className="qr-image"
+             src="/images/image-qr-code.png"
+             alt="QR code that opens Frontend Mentor. The text link below goes to the same place."
+             width={288}
+             height={288}
+-            preload
+-            unoptimized
++            fetchPriority="high"
++            decoding="sync"
+           />
+           <div className="card-copy">
+             <h1 id="card-title">Improve your front-end skills by building projects</h1>
+diff --git a/next.config.ts b/next.config.ts
+index c887978..ba485cb 100644
+--- a/next.config.ts
++++ b/next.config.ts
+@@ -1,3 +1,3 @@
+ import type { NextConfig } from "next";
+-const config: NextConfig = { poweredByHeader: false };
++const config: NextConfig = { poweredByHeader: false, experimental: { inlineCss: true } };
+ export default config;
