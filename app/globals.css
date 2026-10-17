@@ -40,7 +40,7 @@ section[id], main [id] { scroll-margin-top: 1rem; }
   align-items: center;
   min-height: calc(100vw * 538 / 375);
   padding: 2rem 1.5rem 3rem;
-  background: var(--sky) url("/images/mobile/image-header.jpg") center bottom / cover no-repeat;
+  background: var(--sky) url("/images/mobile/image-header.webp") center bottom / cover no-repeat;
   color: white;
 }
 .hero :focus-visible { outline-color: white; }
@@ -96,10 +96,10 @@ picture { display: block; }
 .service { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 2rem; min-height: 37.5rem; padding: 3.5rem 1.125rem; background: center / cover no-repeat; text-align: center; }
 .service h3 { margin: 0; font-family: var(--serif); font-size: 1.75rem; font-weight: 900; line-height: 1.25; letter-spacing: -.2px; }
 .service p { max-width: 21.1875rem; margin: 0; font-size: 1rem; line-height: 1.6875rem; letter-spacing: -.11px; }
-.service-graphic-design { background-image: url("/images/mobile/image-graphic-design.jpg"); background-color: #90d4c6; }
+.service-graphic-design { background-image: url("/images/mobile/image-graphic-design.webp"); background-color: #90d4c6; }
 .service-graphic-design h3 { color: var(--design-heading); }
 .service-graphic-design p { color: var(--design-body); }
-.service-photography { background-image: url("/images/mobile/image-photography.jpg"); background-color: #39b5e4; }
+.service-photography { background-image: url("/images/mobile/image-photography.webp"); background-color: #39b5e4; }
 .service-photography h3 { color: var(--photo-heading); }
 .service-photography p { color: var(--photo-body); }
 
@@ -133,7 +133,7 @@ picture { display: block; }
 .attribution a:hover { color: white; }
 
 @media (min-width: 48rem) {
-  .hero { min-height: 50rem; padding: 3rem 2.5rem; background-image: url("/images/desktop/image-header.jpg"); }
+  .hero { min-height: 50rem; padding: 3rem 2.5rem; background-image: url("/images/desktop/image-header.webp"); }
   .topbar { height: 2.0625rem; }
   .logo { width: 10.625rem; height: 2.0625rem; }
   .menu-toggle svg { width: 2rem; height: 1.5rem; }
@@ -146,8 +146,8 @@ picture { display: block; }
   .feature-copy > * { max-width: 28.1875rem; }
   .feature-copy h2 { font-size: 2.5rem; letter-spacing: -.29px; }
 
-  .service-graphic-design { background-image: url("/images/desktop/image-graphic-design.jpg"); }
-  .service-photography { background-image: url("/images/desktop/image-photography.jpg"); }
+  .service-graphic-design { background-image: url("/images/desktop/image-graphic-design.webp"); }
+  .service-photography { background-image: url("/images/desktop/image-photography.webp"); }
 
   .testimonials { padding: 4.5rem 2.5rem; }
   .testimonial-list { max-width: 37.5rem; margin-top: 5rem; }
