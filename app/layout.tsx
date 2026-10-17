@@ -3,8 +3,10 @@ import { Barlow, Fraunces } from "next/font/google";
 import { pageDescription, pageTitle, siteName, siteUrl } from "./site";
 import "./globals.css";
 
-const barlow = Barlow({ subsets: ["latin"], weight: ["600"], variable: "--font-barlow", display: "swap" });
-const fraunces = Fraunces({ subsets: ["latin"], weight: ["700", "900"], variable: "--font-fraunces", display: "swap" });
+// Fonts aren't preloaded: text paints at once in next/font's size-matched fallback (display: swap), so the
+// font files needn't compete with the first paint.
+const barlow = Barlow({ preload: false, subsets: ["latin"], weight: ["600"], variable: "--font-barlow", display: "swap" });
+const fraunces = Fraunces({ preload: false, subsets: ["latin"], weight: ["700", "900"], variable: "--font-fraunces", display: "swap" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
