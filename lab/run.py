@@ -19,6 +19,10 @@ def summarize(job, n, lhr):
            'benchmarkIndex': lhr['environment']['benchmarkIndex'],
            'scores': {c: None if lhr['categories'].get(c, {}).get('score') is None else round(lhr['categories'][c]['score'] * 100) for c in CATS},
            'metrics': {m: lhr['audits'].get(m, {}).get('numericValue') for m in METRICS}}
+    mi = ((lhr['audits'].get('metrics') or {}).get('details') or {}).get('items') or [{}]
+    reqs = ((lhr['audits'].get('network-requests') or {}).get('details') or {}).get('items') or []
+    rec['observed'] = {'fcp': mi[0].get('observedFirstContentfulPaint'), 'lcp': mi[0].get('observedLargestContentfulPaint'),
+                       'jsEnd': round(max([r.get('networkEndTime', 0) for r in reqs if r.get('resourceType') == 'Script'] or [0]))}
     lcp = json.dumps(lhr['audits'].get('largest-contentful-paint-element', {}).get('details') or lhr['audits'].get('lcp-breakdown-insight', {}).get('details') or {})
     m = re.search(r'"snippet": "(.*?)(?<!\\)"', lcp)
     rec['lcp'] = m.group(1)[:300] if m else None
@@ -39,11 +43,13 @@ for job in jobs:
     slug = re.sub(r'[^a-z0-9]+', '_', job['id'], flags=re.I).strip('_')
     for n in range(1, config['runs'] + 1):
         path = f"out/{slug}-{job['device']}-{n}"
-        cmd = ['lighthouse', job['url'], '--output=json', f'--output-path={path}.lhr.json', '--quiet',
+        cmd = ['lab/node_modules/.bin/lighthouse', job['url'], '--output=json', f'--output-path={path}.lhr.json', '--quiet',
                '--only-categories=' + ','.join(CATS), '--max-wait-for-load=45000',
                '--chrome-flags=--headless=new --no-sandbox --disable-gpu']
         if job['device'] == 'desktop':
             cmd.append('--preset=desktop')
+        if job.get('setup'):
+            cmd = ['node', 'lab/flow.mjs', json.dumps(job), f'{path}.lhr.json']
         t = time.time()
         proc = subprocess.run(cmd, capture_output=True, text=True, timeout=240)
         try:

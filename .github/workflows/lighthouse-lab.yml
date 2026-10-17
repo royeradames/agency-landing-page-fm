@@ -8,7 +8,7 @@ permissions:
   contents: read
 concurrency:
   group: lighthouse-lab
-  cancel-in-progress: true
+  cancel-in-progress: false
 jobs:
   measure:
     runs-on: ubuntu-24.04
@@ -24,7 +24,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm i -g lighthouse@13.5.0
+      - run: npm i --prefix lab --no-save --no-audit --no-fund lighthouse@13.5.0
       - name: Measure shard
         run: python3 lab/run.py ${{ matrix.shard }} 8
       - uses: actions/upload-artifact@v4
