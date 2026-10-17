@@ -19,8 +19,8 @@ jobs:
         run: echo "list=$(python3 -c 'import json;print(json.dumps(json.load(open("lab/tests.json"))))')" >> "$GITHUB_OUTPUT"
   test:
     needs: plan
-    runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    runs-on: ${{ matrix.t.os || 'ubuntu-24.04' }}
+    timeout-minutes: 40
     strategy:
       fail-fast: false
       matrix:
