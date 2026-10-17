@@ -33,4 +33,4 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: bash lab/test.sh "${{ matrix.t.repo }}" "${{ matrix.t.ref }}"
+      - run: bash lab/test.sh "${{ matrix.t.repo }}" "${{ matrix.t.ref }}" "${{ matrix.t.serve }}"
