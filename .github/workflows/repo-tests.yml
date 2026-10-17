@@ -1,0 +1,36 @@
+name: Repo tests (build and Playwright on hosted runner)
+# Runs a repo's own lint, typecheck, build and Playwright suite at a given ref, for repos listed in lab/tests.json.
+on:
+  push:
+    branches: [claude/lighthouse-variants]
+    paths: [lab/tests.json, lab/test.sh]
+permissions:
+  contents: read
+jobs:
+  plan:
+    runs-on: ubuntu-24.04
+    outputs:
+      list: ${{ steps.p.outputs.list }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - id: p
+        run: echo "list=$(python3 -c 'import json;print(json.dumps(json.load(open("lab/tests.json"))))')" >> "$GITHUB_OUTPUT"
+  test:
+    needs: plan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        t: ${{ fromJson(needs.plan.outputs.list) }}
+    name: ${{ matrix.t.repo }}@${{ matrix.t.ref }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: bash lab/test.sh "${{ matrix.t.repo }}" "${{ matrix.t.ref }}"

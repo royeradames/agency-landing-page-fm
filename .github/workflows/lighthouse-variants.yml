@@ -4,6 +4,7 @@ name: Lighthouse variants (build, serve, measure)
 on:
   push:
     branches: [claude/lighthouse-variants]
+    paths: [lab/variants.json, 'lab/patches/**', lab/variant.py]
 permissions:
   contents: read
 concurrency:
