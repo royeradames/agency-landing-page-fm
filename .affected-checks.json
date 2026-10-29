@@ -1,0 +1,149 @@
+{
+  "_about": "royer-merge change-scoped checks for agency-landing-page-fm (affected-checks.mjs reads this before the toolbox's affected-checks.json). Added Oct 28, 2026 in the bottleneck rollout.",
+  "profiles": {
+    "agency-landing-page-fm": {
+      "remote": "agency-landing-page-fm",
+      "docs": [
+        "**/*.md",
+        "docs/**",
+        "**/*.txt",
+        "reference/**",
+        "**/LICENSE"
+      ],
+      "instructions": [
+        "AGENTS.md",
+        "**/AGENTS.md",
+        "CLAUDE.md",
+        ".cursor/rules/**"
+      ],
+      "global": [
+        "package.json",
+        "bun.lock",
+        "package-lock.json",
+        "bunfig.toml",
+        ".npmrc",
+        "tsconfig.json",
+        "next.config.ts",
+        "next-env.d.ts",
+        "eslint.config.mjs",
+        "postcss.config.mjs",
+        "playwright.config.ts",
+        "vercel.json",
+        ".github/**",
+        "app/layout.tsx",
+        "app/globals.css",
+        "middleware.ts",
+        "proxy.ts"
+      ],
+      "renders": {
+        "_about": "A one-page site: every file under app/ or public/ renders /.",
+        "app/**": [
+          "/"
+        ],
+        "public/**": [
+          "/"
+        ]
+      },
+      "checks": [
+        {
+          "name": "typecheck",
+          "what": "tsc --noEmit",
+          "lane": "light",
+          "independent": true,
+          "boat": true,
+          "cmd": "./node_modules/.bin/tsc --noEmit",
+          "when": [
+            "**/*.ts",
+            "**/*.tsx",
+            "**/*.mts"
+          ]
+        },
+        {
+          "name": "lint",
+          "what": "eslint . (the lint script)",
+          "lane": "light",
+          "independent": true,
+          "boat": true,
+          "cmd": "./node_modules/.bin/eslint .",
+          "when": [
+            "**/*.ts",
+            "**/*.tsx",
+            "**/*.mts",
+            "**/*.js",
+            "**/*.mjs",
+            "**/*.cjs"
+          ]
+        },
+        {
+          "name": "build",
+          "what": "next build",
+          "lane": "heavy",
+          "independent": true,
+          "boat": true,
+          "anyCode": true,
+          "cmd": "./node_modules/.bin/next build"
+        },
+        {
+          "name": "own-specs",
+          "what": "the PR's own added or changed Playwright specs (they build and start the site on 127.0.0.1)",
+          "lane": "heavy",
+          "_boat": "Off boat: playwright.config.ts asks for channel \"chrome\" (Google Chrome), which the box image doesn't ship; the specs also start `npm run start` on a fixed port. Runs on a Mac lane when a PR changes a spec.",
+          "cmd": "./node_modules/.bin/next build && ./node_modules/.bin/playwright test --workers=1 {list}",
+          "anyCode": true,
+          "list": [
+            "tests/**/*.spec.ts"
+          ]
+        },
+        {
+          "name": "ui-quality-gate",
+          "aliases": [
+            "quality-gate"
+          ],
+          "what": "the UI quality gate on the pages the diff reaches, at promotion QA; merges skip it (main ships at merge, no promotion gate)",
+          "routes": true,
+          "at": "promotion",
+          "when": [
+            "app/**",
+            "public/**"
+          ]
+        },
+        {
+          "name": "qa",
+          "what": "independent royer-qa on the PR's own routes",
+          "at": "promotion",
+          "routes": true,
+          "when": [
+            "app/**",
+            "public/**"
+          ],
+          "instructionsToo": true
+        },
+        {
+          "name": "qa-gate",
+          "what": "QA at the head before merge (the carve-out: auth, payments, data, secrets and deploy config)",
+          "gate": [
+            "app/api/auth/**",
+            "middleware.*",
+            "proxy.ts",
+            "app/api/{checkout,payment,payments,billing,stripe,webhooks}/**",
+            "migrations/**",
+            "db/**",
+            "vercel.json",
+            ".env*",
+            "**/.env*",
+            "setup.json",
+            ".github/workflows/**"
+          ],
+          "carryAs": "qa"
+        }
+      ],
+      "setup": "[ -d node_modules ] || if [ -f bun.lock ]; then b=\"${BUN:-$HOME/.bun/bin/bun}\"; [ -x \"$b\" ] || b=$(command -v bun) || { echo 'setup: bun.lock but no bun (set BUN or install ~/.bun/bin/bun)' >&2; exit 1; }; NPM_CONFIG_USERCONFIG=/dev/null \"$b\" install --frozen-lockfile > /dev/null; else npm install --no-audit --no-fund > /dev/null 2>&1; fi",
+      "_setup": "Bun is the package manager (Royer, Oct 27, 2026; answerbar #321). Same string as answerbar: bun install --frozen-lockfile with ~/.npmrc ignored, npm install on a branch without bun.lock.",
+      "setupWhenMissing": "node_modules",
+      "boat": {
+        "setup": "v=$(node -p \"((require('./package.json').packageManager || '').match(/^bun@(.+)$/) || [])[1] || ''\"); [ -z \"$v\" ] || npm i -g \"bun@$v\" > /dev/null 2>&1; hash -r",
+        "_setup": "Installs the packageManager's Bun (the box image's Bun 1.3.14 can't read bun.lock), then setup."
+      }
+    }
+  }
+}
