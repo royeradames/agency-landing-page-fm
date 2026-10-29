@@ -1,0 +1,84 @@
+name: Frontend Mentor agency single-pass measurement
+on:
+  workflow_dispatch:
+    inputs:
+      root_admission_sha256:
+        description: Exact separately approved public measurement admission reference
+        required: true
+      reviewed_workflow_sha:
+        description: Exact independently reviewed published workflow commit
+        required: true
+      reviewed_site_sha:
+        description: Exact externally joined production application revision
+        required: true
+      hard_stop_utc:
+        description: Immutable root-approved UTC deadline including queue and cleanup
+        required: true
+      production_preflight_json:
+        description: Exact root-admitted current public agency production snapshot JSON
+        required: true
+      production_preflight_sha256:
+        description: SHA256 of the exact admitted raw production snapshot bytes
+        required: true
+permissions:
+  contents: read
+concurrency:
+  group: fm-agency-single-measurement
+  cancel-in-progress: false
+jobs:
+  measure:
+    if: github.repository == 'royeradames/agency-landing-page-fm' && github.ref == 'refs/heads/main' && github.event.repository.private == false && github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      FM_ROOT_ADMISSION_SHA256: ${{ inputs.root_admission_sha256 }}
+      FM_WORKFLOW_SHA: ${{ inputs.reviewed_workflow_sha }}
+      FM_SITE_SOURCE_SHA: ${{ inputs.reviewed_site_sha }}
+      FM_HARD_STOP_UTC: ${{ inputs.hard_stop_utc }}
+      FM_PRODUCTION_PREFLIGHT_JSON: ${{ inputs.production_preflight_json }}
+      FM_PRODUCTION_PREFLIGHT_SHA256: ${{ inputs.production_preflight_sha256 }}
+      FM_SOURCE_PINS_SHA256: 57cf2f8e54df48e162a6073cd6aea5ca8f80c9b7315933788c5e1f3d2b8d1500
+    steps:
+      - name: Require exact review reference and remaining fixed budget
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import datetime, os, re
+          assert re.fullmatch('[a-f0-9]{64}', os.environ['FM_ROOT_ADMISSION_SHA256'])
+          assert re.fullmatch('[a-f0-9]{40}', os.environ['FM_WORKFLOW_SHA'])
+          assert os.environ['FM_WORKFLOW_SHA'] == os.environ['GITHUB_SHA']
+          assert re.fullmatch('[a-f0-9]{40}', os.environ['FM_SITE_SOURCE_SHA'])
+          hard = datetime.datetime.fromisoformat(os.environ['FM_HARD_STOP_UTC'].replace('Z', '+00:00'))
+          assert hard.tzinfo and (hard - datetime.datetime.now(datetime.timezone.utc)).total_seconds() > 615
+          PY
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          submodules: false
+          lfs: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.11.1'
+          check-latest: false
+      - name: Isolated pinned dependencies and two sequential single passes
+        shell: bash
+        env:
+          npm_config_cache: ${{ runner.temp }}/fm-npm-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          set -euo pipefail
+          owned="$RUNNER_TEMP/fm-agency-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          test ! -e "$owned"
+          mkdir "$owned"
+          trap 'rm -rf -- "$owned" "$npm_config_cache"' EXIT
+          cp -R scripts/fm-lighthouse/. "$owned/"
+          cd "$owned"
+          export TMPDIR="$owned/tmp"
+          export HOME="$owned/home"
+          export npm_config_userconfig="$owned/user.npmrc"
+          export npm_config_globalconfig="$owned/global.npmrc"
+          mkdir "$TMPDIR" "$HOME"
+          : > "$npm_config_userconfig"
+          : > "$npm_config_globalconfig"
+          timeout --signal=TERM --kill-after=10s 180s npm ci --ignore-scripts --no-audit --no-fund
+          timeout --signal=TERM --kill-after=10s 230s node run-hosted.mjs

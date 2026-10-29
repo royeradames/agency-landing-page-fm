@@ -1,0 +1,20 @@
+{
+  "nodeVersion": "24.11.1",
+  "lighthouseVersion": "13.5.0",
+  "puppeteerCoreVersion": "25.9.0",
+  "lockfileSha256": "1e635f99177b5297de2fae940520a0dc1780753c03d28020a562f38736819796",
+  "dependencyEntriesIncludingRoot": 115,
+  "allExternalDependenciesRegistryResolvedWithIntegrity": true,
+  "checkoutAction": "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8",
+  "setupNodeAction": "actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+  "actionCommitResolutionFreshlyVerified": true,
+  "completeActionAndTransitiveSourceAuditClaim": false,
+  "runner": "ubuntu-24.04 standard GitHub-hosted public runner only",
+  "runnerImageIsMutable": true,
+  "chromePath": "/opt/google/chrome/chrome",
+  "chromeVersionAndBinaryHash": "Recorded actual before/after each device; not pinned to a guessed stock-runner version",
+  "newLinuxInstallChromeSandboxCompatibility": "HOLD_UNEXECUTED",
+  "sandboxDisabled": false,
+  "artifactOrCacheUpload": false,
+  "npmLifecycleScripts": false
+}
