@@ -17,6 +17,7 @@
         ".cursor/rules/**"
       ],
       "global": [
+        ".affected-checks.json",
         "package.json",
         "bun.lock",
         "package-lock.json",
